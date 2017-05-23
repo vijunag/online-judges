@@ -24,7 +24,6 @@ int a[MAXLISTSIZE], b[MAXLISTSIZE];
 int main() {
     int m,n, i,j;
 
-    freopen("in.txt", "r", stdin);
     scanf("%d", &n);
     for (i = 0; i < n; ++i) {
         scanf("%d", &a[i]);
