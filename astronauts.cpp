@@ -55,7 +55,7 @@ long long Dfs(vector< vector <int> >& pairs)
 int main()
 {
     int N, I;
-    freopen("input", "r", stdin);
+    //freopen("input", "r", stdin);
     cin >> N >> I;
     vector<vector<int> > pairs(N);
     for (int i = 0; i < I; ++i) {
