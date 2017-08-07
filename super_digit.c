@@ -35,7 +35,6 @@ int main() {
         N += c - '0';
     }
 
-   
     while (isdigit((c=getchar()))) {
         K = K * pow(10, i++);
         K += (c-'0');
