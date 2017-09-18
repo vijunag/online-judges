@@ -4,26 +4,40 @@
 #include <iostream>
 #include <algorithm>
 #include <string.h>
+#include <set>
 using namespace std;
 
 #define MAX_CHAR 2000
 char password[MAX_CHAR];
 char login[MAX_CHAR];
+#ifdef XXX
 std::vector<std::string> opstr;
+#endif
+std::set<std::string> matched;
 
-void matchPassword(std::vector<std::string> &pwords,
+int matchPassword(std::vector<std::string> &pwords,
         const char *login, std::vector<int> &stridx_vec, int &done)
 {
-    if (!*login) {
-        done = 1;
-        return;
+  if (!*login) {
+    done = 1;
+    return 1; //login string has been reduced
+  }
+
+  if (matched.find(login) != matched.end()) {
+    return 0;
+  }
+
+  for(int i=0; i<pwords.size()&&!done; ++i) {
+    if (!strncmp(login, pwords[i].c_str(), pwords[i].size())) {
+      stridx_vec.push_back(i);
+      if (matchPassword(pwords, login+pwords[i].size(), stridx_vec, done)) {
+      } else {
+        stridx_vec.pop_back();
+        matched.insert(login);
+      }
     }
-    for(int i=0;i<pwords.size()&&!done;++i) {
-        if (!strncmp(login, pwords[i].c_str(), strlen(pwords[i].c_str()))) {
-            stridx_vec.push_back(i);
-            matchPassword(pwords, login+strlen(pwords[i].c_str()), stridx_vec, done);
-        }
-    }
+  }
+  return done;
 }
 
 void crackPassword(std::vector<std::string> &pwords,
@@ -34,21 +48,24 @@ void crackPassword(std::vector<std::string> &pwords,
     matchPassword(pwords, login, stridx_vec, done);
     std::string s;
 
+    matched.clear();
     if (done && stridx_vec.size()) {
         for(int i =0; i<stridx_vec.size(); ++i) {
-            s += pwords[stridx_vec[i]] + " ";
+            printf("%s ", pwords[stridx_vec[i]].c_str());
         }
-        s+="\n";
+        printf("\n");
     } else {
-        s += "WRONG PASSWORD\n";
+        printf("WRONG PASSWORD\n");
     }
-    opstr.push_back(s);
 }
 
-int main()
+int main(int argc, char **argv)
 {
     int T, N;
 
+#ifdef CMDLINE
+    freopen(argv[1], "r", stdin);
+#endif /*CMDLINE*/
     scanf("%d", &T);
 
     while (T--) {
@@ -61,7 +78,9 @@ int main()
         scanf("%s", login);
         crackPassword(pwords, login);
     }
+#ifdef XXX
     for(int i=0;i<opstr.size();++i) {
       printf("%s", opstr[i].c_str());
     }
+#endif /*XXX*/
 }
